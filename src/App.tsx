@@ -71,8 +71,8 @@ function App() {
 
       // 1. Fade out scroll indicator
       tl.to(scrollIndicatorRef.current, { opacity: 0, duration: 0.5 }, 0)
-        .to(windowOverlayRef.current, { scale: 2, opacity: 0, duration: 2, ease: "power2.inOut" }, 0) // Window effect
-        .to(zoomImageRef.current, { scale: 50, ease: "power2.inOut", transformOrigin: "center center", duration: 3 }, 0)
+        .to(windowOverlayRef.current, { scale: 2, opacity: 0, filter: "blur(20px)", duration: 2, ease: "power2.inOut" }, 0) // Blur window overlay
+        .to(zoomImageRef.current, { scale: 50, filter: "blur(30px)", ease: "power2.inOut", transformOrigin: "center center", duration: 3 }, 0) // Blur window frame
         .to(zoomImageRef.current, { opacity: 0, duration: 0.5 }, ">-0.5");
 
       // 3. Text Fly-Through Sequence
