@@ -388,9 +388,6 @@ function App() {
                 {adventureImages.map((src, i) => (
                     <div key={`adv-${i}`} className="relative w-[80vw] md:w-[40vw] h-[60vh] md:h-[70vh] flex-shrink-0 rounded-lg overflow-hidden shadow-2xl group">
                         <img src={src} alt="Adventure" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                        <div className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/80 to-transparent w-full">
-                            <span className="text-white font-serif italic text-2xl">Wilderness {i + 1}</span>
-                        </div>
                     </div>
                 ))}
             </div>
