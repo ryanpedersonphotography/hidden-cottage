@@ -409,6 +409,12 @@ function App() {
                         <img src={src} alt="Adventure" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                     </div>
                 ))}
+                {/* Finale Images Moved Here */}
+                {finaleImages.map((src, i) => (
+                     <div key={`fin-${i}`} className="relative w-[80vw] md:w-[40vw] h-[60vh] md:h-[70vh] flex-shrink-0 rounded-lg overflow-hidden shadow-2xl group">
+                          <img src={src} alt="Finale" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                     </div>
+                 ))}
             </div>
 
             {/* Romance Section */}
@@ -424,16 +430,9 @@ function App() {
                 ))}
             </div>
 
-             {/* Finale Section */}
-             <div className="flex-shrink-0 flex items-center gap-4 pl-20">
-                 {finaleImages.map((src, i) => (
-                     <div key={`fin-${i}`} className="w-[90vw] md:w-[45vw] h-[70vh] rounded-lg overflow-hidden shadow-2xl">
-                          <img src={src} alt="Finale" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
-                     </div>
-                 ))}
-                 <div className="w-[50vw] flex flex-col justify-center pl-10">
-                      <h3 className="text-5xl font-serif mb-4">Your Story Begins Here.</h3>
-                 </div>
+             {/* Outro Text */}
+             <div className="flex-shrink-0 w-[50vw] flex flex-col justify-center pl-20">
+                  <h3 className="text-5xl font-serif mb-4 text-white">Your Story Begins Here.</h3>
              </div>
 
          </div>
