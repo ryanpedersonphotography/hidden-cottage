@@ -71,7 +71,6 @@ function App() {
 
       // 1. Fade out scroll indicator
       tl.to(scrollIndicatorRef.current, { opacity: 0, duration: 0.5 }, 0)
-        .to(hazeRef.current, { opacity: 0, duration: 0.5, overwrite: true }, 0)
         .to(windowOverlayRef.current, { scale: 2, opacity: 0, duration: 2, ease: "power2.inOut" }, 0) // Window effect
         .to(zoomImageRef.current, { scale: 50, ease: "power2.inOut", transformOrigin: "center center", duration: 3 }, 0)
         .to(zoomImageRef.current, { opacity: 0, duration: 0.5 }, ">-0.5");
