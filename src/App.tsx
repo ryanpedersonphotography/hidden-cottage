@@ -15,6 +15,7 @@ function App() {
   const hlsVideoRef = useRef<HTMLVideoElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  const hazeRef = useRef<HTMLDivElement>(null);
   
   // Horizontal Scroll Refs
   const horizontalRef = useRef<HTMLDivElement>(null);
@@ -279,16 +280,24 @@ function App() {
           {/* Background Video (Revealed through the hole) */}
           <video 
               ref={hlsVideoRef}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover z-0"
               autoPlay 
               muted 
               loop 
               playsInline
+              onCanPlay={() => {
+                  if (hazeRef.current) {
+                      gsap.to(hazeRef.current, { opacity: 0, duration: 2, ease: "power2.inOut" });
+                  }
+              }}
               // src is handled by HLS.js or native logic
           />
 
+          {/* Loading Cloud Overlay */}
+          <div ref={hazeRef} className="absolute inset-0 bg-white z-10 pointer-events-none" />
+
           {/* Foreground Image (The one with the transparent hole) */}
-          <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 z-20 flex items-center justify-center overflow-hidden pointer-events-none">
              <img 
                 ref={zoomImageRef}
                 src="/flying-transparent.png" 
