@@ -197,10 +197,10 @@ function App() {
   ];
 
   const flyTexts = [
-      "WELCOME TO THE HIDDEN WORLD",
-      "WHERE TIME STANDS STILL",
-      "BREATHE THE WILD",
-      "DISCOVER YOURSELF"
+      ["WELCOME TO", "THE HIDDEN WORLD"],
+      ["WHERE TIME", "STANDS STILL"],
+      ["BREATHE", "THE WILD"],
+      ["DISCOVER", "YOURSELF"]
   ];
 
   return (
@@ -232,9 +232,13 @@ function App() {
           </div>
 
           {/* Text Fly-Through Elements */}
-          {flyTexts.map((text, i) => (
-             <div key={i} className="fly-text absolute z-20 text-center pointer-events-none text-white opacity-0 w-full px-4">
-                <h2 className="text-3xl md:text-5xl font-serif italic font-light tracking-[0.2em] drop-shadow-2xl">{text}</h2>
+          {flyTexts.map((lines, i) => (
+             <div key={i} className="fly-text absolute z-20 text-center pointer-events-none text-white opacity-0 w-full px-4 flex flex-col items-center gap-4">
+                {lines.map((line, j) => (
+                    <h2 key={j} className="text-3xl md:text-5xl font-serif italic font-light tracking-[0.2em] drop-shadow-2xl leading-tight">
+                        {line}
+                    </h2>
+                ))}
              </div>
           ))}
           
