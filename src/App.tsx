@@ -287,7 +287,7 @@ function App() {
               playsInline
               onCanPlay={() => {
                   if (hazeRef.current) {
-                      gsap.to(hazeRef.current, { opacity: 0, duration: 2, ease: "power2.inOut" });
+                      gsap.to(hazeRef.current, { opacity: 0, duration: 4, ease: "power2.inOut" });
                   }
               }}
               // src is handled by HLS.js or native logic
