@@ -402,7 +402,7 @@ function App() {
             {/* Adventure Section */}
             <div className="flex-shrink-0 flex items-center gap-8">
                 <div className="w-[20vw] h-full flex items-center justify-center">
-                    <h3 className="text-8xl md:text-[12rem] font-serif opacity-10 -rotate-90 whitespace-nowrap text-cyan-100">ADVENTURE</h3>
+                    <h3 className="text-[12vh] md:text-[18vh] leading-none font-serif opacity-10 -rotate-90 whitespace-nowrap text-cyan-100">ADVENTURE</h3>
                 </div>
                 {adventureImages.map((src, i) => (
                     <div key={`adv-${i}`} className="relative w-[80vw] md:w-[40vw] h-[60vh] md:h-[70vh] flex-shrink-0 rounded-lg overflow-hidden shadow-2xl group">
@@ -414,7 +414,7 @@ function App() {
             {/* Romance Section */}
             <div className="flex-shrink-0 flex items-center gap-8 pl-20 border-l border-white/10">
                 <div className="w-[20vw] h-full flex items-center justify-center">
-                    <h3 className="text-8xl md:text-[12rem] font-serif opacity-10 -rotate-90 whitespace-nowrap text-rose-100">ROMANCE</h3>
+                    <h3 className="text-[12vh] md:text-[18vh] leading-none font-serif opacity-10 -rotate-90 whitespace-nowrap text-rose-100">ROMANCE</h3>
                 </div>
                 {romanceImages.map((src, i) => (
                     <div key={`rom-${i}`} className="relative w-[70vw] md:w-[30vw] h-[50vh] md:h-[60vh] flex-shrink-0 rounded-lg overflow-hidden shadow-2xl group">
