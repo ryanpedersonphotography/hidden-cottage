@@ -40,7 +40,7 @@ function App() {
   useEffect(() => {
       if (isVideoReady && isPageLoaded && hazeRef.current) {
           gsap.to(hazeRef.current, { 
-              opacity: 0, 
+              autoAlpha: 0, 
               duration: 4, 
               ease: "power2.inOut",
               delay: 0.5 // Slight pause before reveal
@@ -288,6 +288,13 @@ function App() {
   return (
     <div className="bg-cottage-dark text-cottage-light font-sans min-h-screen selection:bg-white selection:text-black transition-colors duration-700 ease-out" ref={wrapperRef}>
       
+      {/* Global Loading Screen */}
+      <div ref={hazeRef} className="fixed inset-0 z-[100] bg-[#eaffff] flex flex-col items-center justify-center">
+          <div className="absolute w-96 h-96 bg-white rounded-full blur-[150px] opacity-60 animate-pulse" />
+          <h1 className="relative text-4xl md:text-6xl font-serif text-[#1a1a1a] tracking-widest mb-4 z-10">HIDDEN</h1>
+          <p className="relative text-xs md:text-sm font-sans text-[#555] tracking-[0.5em] uppercase z-10">Icelandic Retreat</p>
+      </div>
+      
       {/* Zoom Hero Section */}
       <section ref={zoomHeroRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-black z-50">
           
@@ -309,10 +316,7 @@ function App() {
             className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.3)_80%,rgba(0,0,0,0.8)_100%)] shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" 
           />
 
-          {/* Loading Cloud Overlay */}
-          <div ref={hazeRef} className="absolute inset-0 bg-white z-20 pointer-events-none flex items-center justify-center">
-              <span className="text-black/20 font-serif tracking-[0.5em] text-xs md:text-sm animate-pulse">LOADING</span>
-          </div>
+
 
           {/* Foreground Image (The one with the transparent hole) */}
           <div className="absolute inset-0 z-30 flex items-center justify-center overflow-hidden pointer-events-none">
