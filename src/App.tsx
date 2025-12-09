@@ -56,7 +56,7 @@ function App() {
         scrollTrigger: {
             trigger: zoomHeroRef.current,
             start: "top top",
-            end: "+=6000", // Extended pin for text sequence
+            end: "+=10000", // Increased pin distance for sequential reading
             pin: true,
             scrub: 1,
         }
@@ -93,7 +93,7 @@ function App() {
             ],
             duration: 3, // Total duration for one phrase
           }, 
-          i === 0 ? "+=0.5" : ">-2.0" // Start first text after zoom finishes, overlap subsequent texts
+          i === 0 ? "+=0.5" : ">-0.5" // Minimal overlap for clear reading
         );
       });
 
@@ -197,10 +197,22 @@ function App() {
   ];
 
   const flyTexts = [
-      ["WELCOME TO", "THE HIDDEN WORLD"],
-      ["WHERE TIME", "STANDS STILL"],
-      ["BREATHE", "THE WILD"],
-      ["DISCOVER", "YOURSELF"]
+      { 
+          lines: ["WELCOME TO", "THE HIDDEN WORLD"], 
+          className: "justify-center items-center text-center" 
+      },
+      { 
+          lines: ["WHERE TIME", "STANDS STILL"], 
+          className: "justify-start items-start pt-[20vh] pl-[5vw] text-left" 
+      },
+      { 
+          lines: ["BREATHE", "THE WILD"], 
+          className: "justify-end items-end pb-[20vh] pr-[5vw] text-right" 
+      },
+      { 
+          lines: ["LET'S BEGIN", "YOUR JOURNEY"], 
+          className: "justify-center items-center text-center" 
+      }
   ];
 
   return (
@@ -232,10 +244,10 @@ function App() {
           </div>
 
           {/* Text Fly-Through Elements */}
-          {flyTexts.map((lines, i) => (
-             <div key={i} className="fly-text absolute z-20 text-center pointer-events-none text-white opacity-0 w-full px-4 flex flex-col items-center gap-4">
-                {lines.map((line, j) => (
-                    <h2 key={j} className="text-3xl md:text-5xl font-serif italic font-light tracking-[0.2em] drop-shadow-2xl leading-tight">
+          {flyTexts.map((item, i) => (
+             <div key={i} className={`fly-text absolute inset-0 z-20 pointer-events-none text-white opacity-0 w-full h-full p-6 flex flex-col gap-4 ${item.className}`}>
+                {item.lines.map((line, j) => (
+                    <h2 key={j} className="text-3xl md:text-6xl font-serif italic font-light tracking-[0.2em] drop-shadow-2xl leading-tight">
                         {line}
                     </h2>
                 ))}
