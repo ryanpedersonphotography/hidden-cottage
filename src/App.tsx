@@ -16,6 +16,7 @@ function App() {
   const galleryRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const hazeRef = useRef<HTMLDivElement>(null);
+  const windowOverlayRef = useRef<HTMLDivElement>(null);
   
   // Horizontal Scroll Refs
   const horizontalRef = useRef<HTMLDivElement>(null);
@@ -69,22 +70,11 @@ function App() {
       });
 
       // 1. Fade out scroll indicator
-      tl.to(scrollIndicatorRef.current, {
-        opacity: 0,
-        duration: 0.5,
-      }, 0)
-      
-      // 2. Zoom through the hole
-      .to(zoomImageRef.current, {
-        scale: 50, 
-        ease: "power2.inOut",
-        transformOrigin: "center center",
-        duration: 3,
-      }, 0)
-      .to(zoomImageRef.current, {
-        opacity: 0,
-        duration: 0.5, 
-      }, ">-0.5") // Overlap slightly with end of zoom
+      tl.to(scrollIndicatorRef.current, { opacity: 0, duration: 0.5 }, 0)
+        .to(hazeRef.current, { opacity: 0, duration: 0.5, overwrite: true }, 0)
+        .to(windowOverlayRef.current, { scale: 2, opacity: 0, duration: 2, ease: "power2.inOut" }, 0) // Window effect
+        .to(zoomImageRef.current, { scale: 50, ease: "power2.inOut", transformOrigin: "center center", duration: 3 }, 0)
+        .to(zoomImageRef.current, { opacity: 0, duration: 0.5 }, ">-0.5");
 
       // 3. Text Fly-Through Sequence
       const texts = gsap.utils.toArray('.fly-text');
@@ -293,11 +283,17 @@ function App() {
               // src is handled by HLS.js or native logic
           />
 
+          {/* Airplane Window Effect Overlay */}
+          <div 
+            ref={windowOverlayRef} 
+            className="absolute inset-0 z-10 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_40%,rgba(0,0,0,0.3)_80%,rgba(0,0,0,0.8)_100%)] shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" 
+          />
+
           {/* Loading Cloud Overlay */}
-          <div ref={hazeRef} className="absolute inset-0 bg-white z-10 pointer-events-none" />
+          <div ref={hazeRef} className="absolute inset-0 bg-white z-20 pointer-events-none" />
 
           {/* Foreground Image (The one with the transparent hole) */}
-          <div className="absolute inset-0 z-20 flex items-center justify-center overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 z-30 flex items-center justify-center overflow-hidden pointer-events-none">
              <img 
                 ref={zoomImageRef}
                 src="/flying-transparent.png" 
@@ -309,7 +305,7 @@ function App() {
 
           {/* Text Fly-Through Elements */}
           {flyTexts.map((item, i) => (
-             <div key={i} className={`fly-text absolute inset-0 z-20 pointer-events-none text-white opacity-0 w-full h-full p-6 flex flex-col gap-4 ${item.className}`}>
+             <div key={i} className={`fly-text absolute inset-0 z-40 pointer-events-none text-white opacity-0 w-full h-full p-6 flex flex-col gap-4 ${item.className}`}>
                 {item.lines.map((line, j) => (
                     <h2 key={j} className="text-3xl md:text-6xl font-serif italic font-light tracking-[0.2em] drop-shadow-2xl leading-tight">
                         {line}
