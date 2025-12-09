@@ -3,6 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 import Hls from 'hls.js';
+import HlsVideo from './components/HlsVideo';
 
 // Register ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
@@ -197,19 +198,19 @@ function App() {
     },
     { 
       type: 'video', 
-      src: "/hero-video.mp4", 
+      src: "https://stream.mux.com/OvXUe66SLFMW600ZllVZ2yM6GKzjFdguc02gTL5gEe65Q.m3u8", 
       label: "Timeless", 
       className: "col-span-1 md:col-span-2 aspect-video" 
     },
     { 
       type: 'video', 
-      src: "/collage-2.mp4", 
+      src: "https://stream.mux.com/xOt4Vao9xxkMnPVCkC71P2d3GKfDPwuTBWLXddPn7So.m3u8", 
       label: "Aurora", 
       className: "col-span-1 row-span-1 md:row-span-2 aspect-[9/16]" 
     },
     { 
       type: 'video', 
-      src: "/flyinto.mp4", 
+      src: "https://stream.mux.com/oSMXNJvzIhPSQTZmXI4CTO5qG1GBBO2mCH5Ddm9TSoo.m3u8", 
       label: "Arrival", 
       className: "col-span-1 md:col-span-2 aspect-video" 
     },
@@ -221,13 +222,13 @@ function App() {
     },
     { 
       type: 'video', 
-      src: "/collage-3.mp4", 
+      src: "https://stream.mux.com/xOt4Vao9xxkMnPVCkC71P2d3GKfDPwuTBWLXddPn7So.m3u8", 
       label: "Stillness", 
       className: "col-span-1 row-span-1 md:row-span-2 aspect-[9/16]" 
     },
     { 
       type: 'video', 
-      src: "/collage-1.mp4", 
+      src: "https://stream.mux.com/OpKxMRF7H5xm01gk00aJW00H01qIio4Hd9IfibLa00EWcTL8.m3u8", 
       label: "Horizons", 
       className: "col-span-1 md:col-span-2 aspect-video" 
     },
@@ -239,7 +240,7 @@ function App() {
     },
     { 
       type: 'video', 
-      src: "/flytowards.mp4", 
+      src: "https://stream.mux.com/cv7i3VA56GSMmD00sYLZkGoamknBPCDvUhF02wQ7R7IzA.m3u8", 
       label: "Journey", 
       className: "col-span-1 md:col-span-2 aspect-video" 
     },
@@ -332,28 +333,43 @@ function App() {
       <section ref={galleryRef} className="relative z-20 px-4 md:px-8 pb-32 w-full max-w-[1920px] mx-auto mt-[10vh] bg-gradient-to-b from-transparent to-cottage-dark">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
-          {items.map((item, index) => {
-             if (item.type === 'video') {
-                 return (
-                    <div 
-                        key={index} 
-                        className={`masonry-item relative rounded-xl overflow-hidden shadow-2xl bg-gray-900 group cursor-pointer ${item.className}`}
-                    >
-                        <video 
-                            className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
-                            autoPlay 
-                            muted 
-                            loop 
-                            playsInline
-                            src={item.src}
-                        />
-                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
-                        <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <span className="text-white text-sm tracking-widest uppercase font-bold drop-shadow-md">{item.label}</span>
-                        </div>
-                    </div>
-                 );
-             } else {
+                    {items.map((item, index) => {
+          
+                       if (item.type === 'video') {
+          
+                           return (
+          
+                              <div key={index} className={`masonry-item relative rounded-xl overflow-hidden shadow-2xl bg-gray-900 group cursor-pointer ${item.className}`}>
+          
+                                                          <HlsVideo 
+          
+                                                              className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110" 
+          
+                                                              autoPlay 
+          
+                                                              muted 
+          
+                                                              loop 
+          
+                                                              playsInline 
+          
+                                                              src={item.src!} 
+          
+                                                          />
+          
+                                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors duration-500" />
+          
+                                  <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          
+                                      <span className="text-white text-sm tracking-widest uppercase font-bold drop-shadow-md">{item.label}</span>
+          
+                                  </div>
+          
+                              </div>
+          
+                           );
+          
+                       } else {
                  return (
                     <div key={index} className={`masonry-item shadow-xl backdrop-blur-sm ${item.className}`}>
                         <h3 className="font-serif text-2xl md:text-3xl italic text-white/90 mb-2">{item.title}</h3>
