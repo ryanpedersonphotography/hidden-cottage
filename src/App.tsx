@@ -14,6 +14,10 @@ function App() {
   const hlsVideoRef = useRef<HTMLVideoElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  
+  // Horizontal Scroll Refs
+  const horizontalRef = useRef<HTMLDivElement>(null);
+  const horizontalTrackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Initialize Lenis
@@ -130,6 +134,51 @@ function App() {
         }
       });
 
+      // --- Horizontal Scroll Logic ---
+      const track = horizontalTrackRef.current;
+      const container = horizontalRef.current;
+      
+      if (track && container) {
+          const scrollLength = track.scrollWidth - window.innerWidth;
+
+          // Pin and Scroll
+          const horizontalTl = gsap.timeline({
+              scrollTrigger: {
+                  trigger: container,
+                  start: "top top",
+                  end: () => `+=${scrollLength}`,
+                  pin: true,
+                  scrub: 1,
+                  invalidateOnRefresh: true,
+              }
+          });
+
+          horizontalTl.to(track, {
+              x: -scrollLength,
+              ease: "none"
+          });
+
+          // Background Color Changes
+          ScrollTrigger.create({
+              trigger: container,
+              start: "top top",
+              end: () => `+=${scrollLength}`,
+              scrub: true,
+              onUpdate: (self) => {
+                  const progress = self.progress;
+                  if (progress < 0.1) {
+                      gsap.to(wrapperRef.current, { backgroundColor: '#1a1a1a', overwrite: 'auto' });
+                  } else if (progress >= 0.1 && progress < 0.4) {
+                      gsap.to(wrapperRef.current, { backgroundColor: '#263341', overwrite: 'auto' }); // Adventure Blue-Grey
+                  } else if (progress >= 0.4 && progress < 0.8) {
+                      gsap.to(wrapperRef.current, { backgroundColor: '#3e2723', overwrite: 'auto' }); // Romance Warm Brown
+                  } else {
+                      gsap.to(wrapperRef.current, { backgroundColor: '#1a1a1a', overwrite: 'auto' });
+                  }
+              }
+          });
+      }
+
     }, wrapperRef);
 
     return () => {
@@ -215,8 +264,13 @@ function App() {
       }
   ];
 
+  // Horizontal Assets
+  const adventureImages = [1, 2, 3, 4].map(n => `/assets/horizontal/adventure-${n}.jpg`);
+  const romanceImages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(n => `/assets/horizontal/romance-${n}.jpg`);
+  const finaleImages = [1, 2].map(n => `/assets/horizontal/finale-${n}.jpg`);
+
   return (
-    <div className="bg-cottage-dark text-cottage-light font-sans min-h-screen selection:bg-white selection:text-black" ref={wrapperRef}>
+    <div className="bg-cottage-dark text-cottage-light font-sans min-h-screen selection:bg-white selection:text-black transition-colors duration-700 ease-out" ref={wrapperRef}>
       
       {/* Zoom Hero Section */}
       <section ref={zoomHeroRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-black z-50">
@@ -310,6 +364,63 @@ function App() {
           })}
 
         </div>
+      </section>
+
+      {/* Horizontal Scroll Section */}
+      <section ref={horizontalRef} className="relative h-screen overflow-hidden flex items-center z-30">
+         <div ref={horizontalTrackRef} className="flex h-[80vh] items-center gap-[5vw] px-[10vw]">
+            
+            {/* Title Card */}
+            <div className="flex-shrink-0 w-[80vw] md:w-[40vw] flex flex-col justify-center">
+                <h2 className="text-6xl md:text-8xl font-serif text-white leading-none">
+                    Choose<br/>Your Path
+                </h2>
+                <p className="mt-8 text-xl text-gray-300 max-w-md">
+                    Every direction holds a new discovery. Will you seek the thrill of the wild or the warmth of intimacy?
+                </p>
+            </div>
+
+            {/* Adventure Section */}
+            <div className="flex-shrink-0 flex items-center gap-8">
+                <div className="w-[20vw] h-full flex items-center justify-center">
+                    <h3 className="text-8xl md:text-[12rem] font-serif opacity-10 -rotate-90 whitespace-nowrap text-cyan-100">ADVENTURE</h3>
+                </div>
+                {adventureImages.map((src, i) => (
+                    <div key={`adv-${i}`} className="relative w-[80vw] md:w-[40vw] h-[60vh] md:h-[70vh] flex-shrink-0 rounded-lg overflow-hidden shadow-2xl group">
+                        <img src={src} alt="Adventure" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div className="absolute bottom-0 left-0 p-6 bg-gradient-to-t from-black/80 to-transparent w-full">
+                            <span className="text-white font-serif italic text-2xl">Wilderness {i + 1}</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Romance Section */}
+            <div className="flex-shrink-0 flex items-center gap-8 pl-20 border-l border-white/10">
+                <div className="w-[20vw] h-full flex items-center justify-center">
+                    <h3 className="text-8xl md:text-[12rem] font-serif opacity-10 -rotate-90 whitespace-nowrap text-rose-100">ROMANCE</h3>
+                </div>
+                {romanceImages.map((src, i) => (
+                    <div key={`rom-${i}`} className="relative w-[70vw] md:w-[30vw] h-[50vh] md:h-[60vh] flex-shrink-0 rounded-lg overflow-hidden shadow-2xl group">
+                        <img src={src} alt="Romance" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <div className="absolute inset-0 bg-rose-900/10 mix-blend-overlay group-hover:opacity-0 transition-opacity" />
+                    </div>
+                ))}
+            </div>
+
+             {/* Finale Section */}
+             <div className="flex-shrink-0 flex items-center gap-4 pl-20">
+                 {finaleImages.map((src, i) => (
+                     <div key={`fin-${i}`} className="w-[90vw] md:w-[45vw] h-[70vh] rounded-lg overflow-hidden shadow-2xl">
+                          <img src={src} alt="Finale" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" />
+                     </div>
+                 ))}
+                 <div className="w-[50vw] flex flex-col justify-center pl-10">
+                      <h3 className="text-5xl font-serif mb-4">Your Story Begins Here.</h3>
+                 </div>
+             </div>
+
+         </div>
       </section>
 
       {/* Booking / Footer */}
