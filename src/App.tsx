@@ -441,9 +441,14 @@ function App() {
         <h2 className="text-5xl md:text-8xl font-serif text-white mb-12 text-center opacity-90">
           Book<br/>Your Stay
         </h2>
-        <button className="group relative px-8 py-4 bg-transparent border border-white/30 text-white text-lg tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300 rounded-full overflow-hidden">
+        <a 
+          href="https://9a69884.bookingturbo.com/en/" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="group relative px-8 py-4 bg-transparent border border-white/30 text-white text-lg tracking-widest uppercase hover:bg-white hover:text-black transition-all duration-300 rounded-full overflow-hidden inline-block"
+        >
           <span className="relative z-10">Reserve Now</span>
-        </button>
+        </a>
         <footer className="mt-32 text-gray-600 text-xs tracking-widest uppercase">
           &copy; {new Date().getFullYear()} Hidden Cottages Iceland
         </footer>
