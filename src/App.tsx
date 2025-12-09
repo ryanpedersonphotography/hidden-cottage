@@ -2,13 +2,18 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import Hls from 'hls.js';
 
 // Register ScrollTrigger
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const zoomHeroRef = useRef<HTMLDivElement>(null);
+  const zoomImageRef = useRef<HTMLImageElement>(null);
+  const hlsVideoRef = useRef<HTMLVideoElement>(null);
   const galleryRef = useRef<HTMLDivElement>(null);
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Initialize Lenis
@@ -29,10 +34,71 @@ function App() {
 
     gsap.ticker.lagSmoothing(0);
 
-    // Gallery Animation
+    // Initialize HLS Video
+    if (Hls.isSupported() && hlsVideoRef.current) {
+        const hls = new Hls();
+        hls.loadSource('https://stream.mux.com/lf67zD006rJtxD75pU005vb5FMzlGpCl39h4vcno3jV014.m3u8');
+        hls.attachMedia(hlsVideoRef.current);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+             // Optional: videoRef.current.play(); 
+             // Auto-play is handled by the video attribute usually, but good to have ready.
+        });
+    } else if (hlsVideoRef.current && hlsVideoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        // Native HLS support (Safari)
+        hlsVideoRef.current.src = 'https://stream.mux.com/lf67zD006rJtxD75pU005vb5FMzlGpCl39h4vcno3jV014.m3u8';
+    }
+
+    // GSAP Context
     const ctx = gsap.context(() => {
-      const items = gsap.utils.toArray('.masonry-item');
       
+      // Zoom Hero Animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+            trigger: zoomHeroRef.current,
+            start: "top top",
+            end: "+=6000", // Extended pin for text sequence
+            pin: true,
+            scrub: 1,
+        }
+      });
+
+      // 1. Fade out scroll indicator
+      tl.to(scrollIndicatorRef.current, {
+        opacity: 0,
+        duration: 0.5,
+      }, 0)
+      
+      // 2. Zoom through the hole
+      .to(zoomImageRef.current, {
+        scale: 50, 
+        ease: "power2.inOut",
+        transformOrigin: "center center",
+        duration: 3,
+      }, 0)
+      .to(zoomImageRef.current, {
+        opacity: 0,
+        duration: 0.5, 
+      }, ">-0.5") // Overlap slightly with end of zoom
+
+      // 3. Text Fly-Through Sequence
+      const texts = gsap.utils.toArray('.fly-text');
+      
+      texts.forEach((text: any, i) => {
+        tl.fromTo(text, 
+          { scale: 0.5, opacity: 0, filter: 'blur(10px)' },
+          { 
+            keyframes: [
+                { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: "power2.out" },   // Float in to readable size
+                { opacity: 0, scale: 3, filter: 'blur(20px)', duration: 1, ease: "power2.in" }     // Fly past/fade out
+            ],
+            duration: 3, // Total duration for one phrase
+          }, 
+          i === 0 ? "+=0.5" : ">-2.0" // Start first text after zoom finishes, overlap subsequent texts
+        );
+      });
+
+      // Grid Item Animations (Existing)
+      const items = gsap.utils.toArray('.masonry-item');
       items.forEach((item: any) => {
         gsap.fromTo(item,
           { opacity: 0, y: 100 },
@@ -43,7 +109,7 @@ function App() {
             ease: "power3.out",
             scrollTrigger: {
               trigger: item,
-              start: "top 100%", // Start animating when top of item hits bottom of viewport
+              start: "top 100%", 
               end: "top 80%",
               toggleActions: "play none none reverse"
             }
@@ -51,7 +117,7 @@ function App() {
         );
       });
 
-      // Title Parallax
+      // Title Parallax (Existing)
       gsap.to(".main-title", {
         yPercent: -50,
         opacity: 0,
@@ -130,9 +196,56 @@ function App() {
     },
   ];
 
+  const flyTexts = [
+      "WELCOME TO THE HIDDEN WORLD",
+      "WHERE TIME STANDS STILL",
+      "BREATHE THE WILD",
+      "DISCOVER YOURSELF"
+  ];
+
   return (
     <div className="bg-cottage-dark text-cottage-light font-sans min-h-screen selection:bg-white selection:text-black" ref={wrapperRef}>
       
+      {/* Zoom Hero Section */}
+      <section ref={zoomHeroRef} className="relative w-full h-screen overflow-hidden flex items-center justify-center bg-black z-50">
+          
+          {/* Background Video (Revealed through the hole) */}
+          <video 
+              ref={hlsVideoRef}
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay 
+              muted 
+              loop 
+              playsInline
+              // src is handled by HLS.js or native logic
+          />
+
+          {/* Foreground Image (The one with the transparent hole) */}
+          <div className="absolute inset-0 z-10 flex items-center justify-center overflow-hidden pointer-events-none">
+             <img 
+                ref={zoomImageRef}
+                src="/flying-transparent.png" 
+                alt="Window to the wild" 
+                className="min-w-full min-h-full object-cover w-full h-full"
+                // Starting scale is 1, managed by GSAP
+             />
+          </div>
+
+          {/* Text Fly-Through Elements */}
+          {flyTexts.map((text, i) => (
+             <div key={i} className="fly-text absolute z-20 text-center pointer-events-none text-white opacity-0 w-full px-4">
+                <h2 className="text-3xl md:text-5xl font-serif italic font-light tracking-[0.2em] drop-shadow-2xl">{text}</h2>
+             </div>
+          ))}
+          
+           <div ref={scrollIndicatorRef} className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 animate-bounce text-white mix-blend-difference">
+            <span className="text-[10px] uppercase tracking-widest mb-2 block text-center">Scroll to Enter</span>
+            <svg className="w-6 h-6 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7m0 0l-7-7" />
+            </svg>
+           </div>
+      </section>
+
       {/* Header / Title Section */}
       <header className="header-section relative w-full h-[70vh] flex flex-col items-center justify-center z-10 sticky top-0 pointer-events-none">
         <div className="main-title text-center">
@@ -143,15 +256,10 @@ function App() {
             Icelandic Sanctuary
             </p>
         </div>
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-50 mix-blend-difference">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 14l-7 7m0 0l-7-7" />
-            </svg>
-        </div>
       </header>
 
       {/* Artistic Grid Section */}
-      <section ref={galleryRef} className="relative z-20 px-4 md:px-8 pb-32 w-full max-w-[1920px] mx-auto mt-[40vh] bg-gradient-to-b from-transparent to-cottage-dark">
+      <section ref={galleryRef} className="relative z-20 px-4 md:px-8 pb-32 w-full max-w-[1920px] mx-auto mt-[10vh] bg-gradient-to-b from-transparent to-cottage-dark">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {items.map((item, index) => {
