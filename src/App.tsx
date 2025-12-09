@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
@@ -9,6 +9,9 @@ import HlsVideo from './components/HlsVideo';
 gsap.registerPlugin(ScrollTrigger);
 
 function App() {
+  const [isVideoReady, setVideoReady] = useState(false);
+  const [isPageLoaded, setPageLoaded] = useState(false);
+
   const wrapperRef = useRef<HTMLDivElement>(null);
   const zoomHeroRef = useRef<HTMLDivElement>(null);
   const zoomImageRef = useRef<HTMLImageElement>(null);
@@ -21,6 +24,29 @@ function App() {
   // Horizontal Scroll Refs
   const horizontalRef = useRef<HTMLDivElement>(null);
   const horizontalTrackRef = useRef<HTMLDivElement>(null);
+
+  // Page Load State
+  useEffect(() => {
+      const onPageLoad = () => setPageLoaded(true);
+      if (document.readyState === 'complete') {
+          onPageLoad();
+      } else {
+          window.addEventListener('load', onPageLoad);
+          return () => window.removeEventListener('load', onPageLoad);
+      }
+  }, []);
+
+  // Trigger Intro Animation when Assets Ready
+  useEffect(() => {
+      if (isVideoReady && isPageLoaded && hazeRef.current) {
+          gsap.to(hazeRef.current, { 
+              opacity: 0, 
+              duration: 4, 
+              ease: "power2.inOut",
+              delay: 0.5 // Slight pause before reveal
+          });
+      }
+  }, [isVideoReady, isPageLoaded]);
 
   useEffect(() => {
     // Initialize Lenis
@@ -273,11 +299,7 @@ function App() {
               muted 
               loop 
               playsInline
-              onCanPlay={() => {
-                  if (hazeRef.current) {
-                      gsap.to(hazeRef.current, { opacity: 0, duration: 4, ease: "power2.inOut" });
-                  }
-              }}
+              onCanPlay={() => setVideoReady(true)}
               // src is handled by HLS.js or native logic
           />
 
@@ -288,7 +310,9 @@ function App() {
           />
 
           {/* Loading Cloud Overlay */}
-          <div ref={hazeRef} className="absolute inset-0 bg-white z-20 pointer-events-none" />
+          <div ref={hazeRef} className="absolute inset-0 bg-white z-20 pointer-events-none flex items-center justify-center">
+              <span className="text-black/20 font-serif tracking-[0.5em] text-xs md:text-sm animate-pulse">LOADING</span>
+          </div>
 
           {/* Foreground Image (The one with the transparent hole) */}
           <div className="absolute inset-0 z-30 flex items-center justify-center overflow-hidden pointer-events-none">
