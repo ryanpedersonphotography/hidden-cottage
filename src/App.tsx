@@ -86,11 +86,10 @@ function App() {
                 { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 1.5, ease: "power2.out" },   // Float in to readable size
                 { opacity: 0, scale: 3, filter: 'blur(20px)', duration: 1, ease: "power2.in" }     // Fly past/fade out
             ],
-            duration: 3, // Total duration for one phrase
-          }, 
-          i === 0 ? "+=0.5" : ">-0.5" // Minimal overlap for clear reading
-        );
-      });
+                        duration: 3, // Total duration for one phrase
+                      },
+                      i === 0 ? ">" : ">-0.5" // Start immediately after foreground is gone
+                    );      });
 
       // Grid Item Animations (Existing)
       const items = gsap.utils.toArray('.masonry-item');
